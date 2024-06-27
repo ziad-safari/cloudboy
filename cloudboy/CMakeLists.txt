@@ -1,19 +1,19 @@
-
+#set main source files
 set(MAIN_SOURCES
   main.c
 )
 
 file (GLOB headers "${PROJECT_SOURCE_DIR}/include/*.h")
 
-add_executable(gbemu ${HEADERS} ${MAIN_SOURCES})
-target_link_libraries(gbemu emu)
-target_include_directories(gbemu PUBLIC ${PROJECT_SOURCE_DIR}/include )
+add_executable(cloudboy ${HEADERS} ${MAIN_SOURCES})
+target_link_libraries(cloudboy emu)
+target_include_directories(cloudboy PUBLIC ${PROJECT_SOURCE_DIR}/include )
 
 message(STATUS "SDL Libraries: ${SDL2_LIBRARIES} - ${SDL2_LIBRARY}")
 message(STATUS "SDL TTF Libraries: ${SDL2_TTF_LIBRARIES} - ${SDL2_TTF_LIBRARY}")
 
 
-install(TARGETS gbemu
+install(TARGETS cloudboy
 RUNTIME DESTINATION bin
 LIBRARY DESTINATION lib
 ARCHIVE DESTINATION lib)
@@ -80,4 +80,3 @@ else ()
 endif ()
 
 endif()
-

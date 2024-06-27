@@ -2,19 +2,11 @@
 #include <emu.h>
 #include <cart.h>
 #include <cpu.h>
+//sdl for graphics library
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
-/* 
-  Emu components:
-
-  |Cart|
-  |CPU|
-  |Address Bus|
-  |PPU|
-  |Timer|
-
-*/
+//address bus maps address to cartridge
 
 static emu_context ctx;
 
@@ -27,11 +19,13 @@ void delay(u32 ms) {
 }
 
 int emu_run(int argc, char **argv) {
+    //no rom file
     if (argc < 2) {
         printf("Usage: emu <rom_file>\n");
         return -1;
     }
 
+    //failed to load rom file
     if (!cart_load(argv[1])) {
         printf("Failed to load ROM file: %s\n", argv[1]);
         return -2;
@@ -41,6 +35,7 @@ int emu_run(int argc, char **argv) {
 
     SDL_Init(SDL_INIT_VIDEO);
     printf("SDL INIT\n");
+    //true type fonts
     TTF_Init();
     printf("TTF INIT\n");
 
@@ -50,16 +45,20 @@ int emu_run(int argc, char **argv) {
     ctx.paused = false;
     ctx.ticks = 0;
 
+    //game loop
     while(ctx.running) {
         if (ctx.paused) {
+            //delay 10ms
             delay(10);
             continue;
         }
-
+        
+        //1 step of cpu, terminate if it fails
         if (!cpu_step()) {
             printf("CPU Stopped\n");
             return -3;
         }
+
         ctx.ticks++;
     }
 

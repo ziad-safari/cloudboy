@@ -1,4 +1,4 @@
-project(gbemu C)
+project(cloudboy C)
 
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -87,8 +87,9 @@ set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 ###############################################################################
 # Subdirectories
 add_subdirectory(lib)
-add_subdirectory(gbemu)
-add_subdirectory(tests)
+#use subdirectory cloudboy which contains main.c
+add_subdirectory(cloudboy)
+# add_subdirectory(tests) unit testing wasnt working check.h file reference errors
 
 ###############################################################################
 # Unit tests

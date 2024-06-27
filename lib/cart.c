@@ -1,5 +1,5 @@
 #include <cart.h>
-
+//load rom data in memory
 typedef struct {
     char filename[1024];
     u32 rom_size;
@@ -8,7 +8,13 @@ typedef struct {
 } cart_context;
 
 static cart_context ctx;
+/*
+HEADER
 
+-----
+GAME FILE
+
+*/
 static const char *ROM_TYPES[] = {
     "ROM ONLY",
     "MBC1",
@@ -128,6 +134,7 @@ const char *cart_type_name() {
 }
 
 bool cart_load(char *cart) {
+    //ctx.filename = cart (1024 max size)
     snprintf(ctx.filename, sizeof(ctx.filename), "%s", cart);
 
     FILE *fp = fopen(cart, "r");
@@ -138,17 +145,20 @@ bool cart_load(char *cart) {
     }
 
     printf("Opened: %s\n", ctx.filename);
-
+    //seek to the very end
     fseek(fp, 0, SEEK_END);
     ctx.rom_size = ftell(fp);
-
+    //rewind to beginning
     rewind(fp);
 
+    //allocate romdata
     ctx.rom_data = malloc(ctx.rom_size);
     fread(ctx.rom_data, ctx.rom_size, 1, fp);
     fclose(fp);
 
+    //header starts at 0x100, casting to struct maps rom_data bytes to individual fields
     ctx.header = (rom_header *)(ctx.rom_data + 0x100);
+    //null terminator
     ctx.header->title[15] = 0;
 
     printf("Cartridge Loaded:\n");
@@ -159,6 +169,7 @@ bool cart_load(char *cart) {
     printf("\t LIC Code : %2.2X (%s)\n", ctx.header->lic_code, cart_lic_name());
     printf("\t ROM Vers : %2.2X\n", ctx.header->version);
 
+    //checksum
     u16 x = 0;
     for (u16 i=0x0134; i<=0x014C; i++) {
         x = x - ctx.rom_data[i] - 1;

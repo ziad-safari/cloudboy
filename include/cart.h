@@ -2,6 +2,7 @@
 
 #include <common.h>
 
+//cartridge from 0x100 to 0x14F
 typedef struct {
     u8 entry[4];
     u8 logo[0x30];

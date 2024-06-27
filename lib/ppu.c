@@ -7,7 +7,7 @@ void ppu_init() {
 //option 1:
 //xvbf buffer cache
 //8x8 pixel tiles 
-//option 2: wasm
+//option 2: wasm web assembly 
 void ppu_tick() {
 
 }

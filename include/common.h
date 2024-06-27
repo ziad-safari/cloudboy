@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//common macros for bit manipulation
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
