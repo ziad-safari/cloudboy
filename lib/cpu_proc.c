@@ -1,5 +1,6 @@
 #include <cpu.h>
 #include <emu.h>
+
 //process and execute CPU instructions...
 static void proc_none(cpu_context *ctx) {
     printf("INVALID INSTRUCTION!\n");
