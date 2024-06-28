@@ -12,3 +12,5 @@ int emu_run(int argc, char **argv);
 
 //get current emulator context
 emu_context *emu_get_context();
+
+void emu_cycles(int cpu_cycles);

@@ -61,6 +61,9 @@ int emu_run(int argc, char **argv) {
 
         ctx.ticks++;
     }
-
     return 0;
+}
+
+void emu_cycles(int cpu_cycles) {
+    //TODO... Will eventually use to synchronize the Timer with the CPU and the PPU
 }
