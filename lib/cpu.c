@@ -24,18 +24,19 @@ static void fetch_data() {
     }
 
     switch(ctx.cur_inst->mode) {
+        // Implied
         case AM_IMP: return;
-
+        // Read Register
         case AM_R:
             ctx.fetched_data = cpu_read_reg(ctx.cur_inst->reg_1);
             return;
-
+        // Read Program Counter
         case AM_R_D8:
             ctx.fetched_data = bus_read(ctx.regs.pc);
             emu_cycles(1);
             ctx.regs.pc++;
             return;
-
+        // Read virtual 16 bit address (AF, BC, DE) 
         case AM_D16: {
             u16 lo = bus_read(ctx.regs.pc);
             emu_cycles(1);
