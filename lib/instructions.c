@@ -12,8 +12,8 @@ instruction instructions[0x100] = {
     //XOR of A
     [0XAF] = {IN_XOR, AM_R, RT_A},
     //jump instr
-
     [0xC3] = {IN_JP,AM_D16},
+    // Reset Interrupt Master (IME) Flag, prohibits maskable interrupts
     [0xF3] = {IN_DI},
 };
 //0x00
