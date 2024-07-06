@@ -1,7 +1,13 @@
 #include <instructions.h>
 #include <cpu.h>
-
+#include <string>
+#include <map>
 //this is an array of size 0x100 = 256 (16*16)
+/*
+inst.txt
+<NONE>
+NOP
+
 instruction instructions[0x100] = {
     //NO OP
     [0x00] = {IN_NOP,AM_IMP},
@@ -16,6 +22,17 @@ instruction instructions[0x100] = {
     // Reset Interrupt Master (IME) Flag, prohibits maskable interrupts
     [0xF3] = {IN_DI},
 };
+
+
+*/
+std::map<int, instruction> instructions = {
+    {0x00, {IN_NOP, AM_IMP}},
+    {0x05, {IN_DEC, AM_R, RT_B}},
+    {0x0E, {IN_LD, AM_R_D8, RT_C}},
+    {0xAF, {IN_XOR, AM_R, RT_A}},
+    {0xC3, {IN_JP, AM_D16}},
+    {0xF3, {IN_DI, AM_IMP}} // Assuming AM_IMP for IN_DI, adjust if necessary
+};
 //0x00
 //instruction[0x00]
 instruction *instruction_by_opcode(u8 opcode) {
@@ -24,7 +41,7 @@ instruction *instruction_by_opcode(u8 opcode) {
     }
     return &instructions[opcode];
 }
-char *inst_lookup[] = {
+std::string inst_lookup[] = {
     "<NONE>",
     "NOP",
     "LD",
@@ -74,6 +91,6 @@ char *inst_lookup[] = {
     "IN_RES", 
     "IN_SET"
 };
-char *inst_name(in_type t) {
+std::string inst_name(in_type t) {
     return inst_lookup[t];
 }

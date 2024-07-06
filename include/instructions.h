@@ -1,7 +1,7 @@
 #pragma once
 
 #include <common.h>
-
+#include <string>
 typedef enum {
     AM_IMP,
     AM_R_D16,
@@ -111,4 +111,4 @@ typedef struct {
 
 instruction *instruction_by_opcode(u8 opcode);
 
-char *inst_name(in_type t);
+std::string inst_name(in_type t);

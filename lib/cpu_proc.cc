@@ -1,6 +1,6 @@
 #include <cpu.h>
 #include <emu.h>
-
+#include <unordered_map>
 //process and execute CPU instructions...
 static void proc_none(cpu_context *ctx) {
     printf("INVALID INSTRUCTION!\n");
@@ -9,8 +9,13 @@ static void proc_none(cpu_context *ctx) {
 static void proc_nop(cpu_context *ctx) {
 
 }
+// Disable interrupts for various IO and other instructions
 static void proc_di(cpu_context *ctx) {
     ctx->int_master_enabled = false;
+}
+// Loading procedure
+static void proc_load(cpu_context *ctx) {
+    
 }
 static bool check_cond(cpu_context *ctx) {
     bool z = CPU_FLAG_Z;
@@ -56,14 +61,19 @@ static void proc_xor(cpu_context *ctx) {
     cpu_set_flags(ctx, ctx->regs.a == 0, 0, 0, 0);
     printf("register a value:%d\n",ctx->regs.a);
 }
-static IN_PROC processors[] = {
-    [IN_NONE] = proc_none,
-    [IN_NOP] = proc_nop,
-    // [IN_LD] = proc_ld,
-    [IN_JP] = proc_jp,
-    [IN_DI] = proc_di,
-    [IN_XOR] = proc_xor
+static const std::unordered_map<in_type, IN_PROC> processors = {
+    {IN_NONE, proc_none},
+    {IN_NOP, proc_nop},
+    {IN_LD, proc_load},
+    {IN_JP, proc_jp},
+    {IN_DI, proc_di},
+    {IN_XOR, proc_xor}
 };
+
 IN_PROC inst_get_processor(in_type type) {
-    return processors[type];
+    auto it = processors.find(type);
+    if (it != processors.end()) {
+        return it->second;
+    }
+    // return processors[type];
 }

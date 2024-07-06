@@ -25,6 +25,7 @@ void fetch_data() {
             ctx.fetched_data = cpu_read_reg(ctx.cur_inst->reg_2);
             return;
         // Read Program Counter
+        //Direct Load 8 bit value
         case AM_R_D8:
             ctx.fetched_data = bus_read(ctx.regs.pc);
             emu_cycles(1);
@@ -32,7 +33,7 @@ void fetch_data() {
             return;
         // Read virtual 16 bit address (AF, BC, DE)
         case AM_R_D16: 
-         
+            
         case AM_D16: {
             u16 lo = bus_read(ctx.regs.pc);
             emu_cycles(1);
@@ -53,7 +54,7 @@ void fetch_data() {
             ctx.dest_is_mem = true; // flag
 
             if (ctx.cur_inst->reg_1 == RT_C) { // Special Case when writing to reg C
-                ctx.mem_dest |= 0xFF00;
+                ctx.mem_dest |= 0xFF00; //this is for I/O ports since 0XFF00 - 0xFF7F is mem mapped I/O
             }
             return;
         // Reading memory address to a register ie. loading address bc to reg a 

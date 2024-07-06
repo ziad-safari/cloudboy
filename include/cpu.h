@@ -3,6 +3,14 @@
 #include <common.h>
 #include <instructions.h>
 
+/**************************
+CPU registers:
+a: accumulator
+f: flags
+b - l: general purpose
+pc: program counter
+sp: stack pointer
+**************************/
 typedef struct {
     u8 a;
     u8 f;
@@ -38,6 +46,7 @@ typedef struct {
 
 void cpu_init();
 bool cpu_step();
+void fetch_data();
 
 //define a type called IN_PROC which is a function pointer
 typedef void (*IN_PROC)(cpu_context *);

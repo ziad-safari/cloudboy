@@ -1,6 +1,6 @@
 #set main source files
 set(MAIN_SOURCES
-  main.c
+  main.cc
 )
 
 file (GLOB headers "${PROJECT_SOURCE_DIR}/include/*.h")

@@ -1,6 +1,9 @@
-project(cloudboy C)
+cmake_minimum_required(VERSION 3.10)
+project(cloudboy VERSION 1.0 LANGUAGES C CXX)
+cmake_policy(SET CMP0048 NEW)
 
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 ###############################################################################
@@ -87,7 +90,7 @@ set(CONFIG_HEADER ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 ###############################################################################
 # Subdirectories
 add_subdirectory(lib)
-#use subdirectory cloudboy which contains main.c
+#use subdirectory cloudboy which contains main.cc
 add_subdirectory(cloudboy)
 # add_subdirectory(tests) unit testing wasnt working check.h file reference errors
 
