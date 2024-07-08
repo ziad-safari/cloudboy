@@ -1,27 +1,29 @@
+#include <cpu_proc.h>
 #include <cpu.h>
 #include <emu.h>
 #include <unordered_map>
+
 //process and execute CPU instructions...
-static void proc_none(cpu_context *ctx) {
+void CPUProc::proc_none() {
     printf("INVALID INSTRUCTION!\n");
     exit(-7);
 }
-static void proc_nop(cpu_context *ctx) {
+void CPUProc::proc_nop() {
 
 }
 // Disable interrupts for various IO and other instructions
-static void proc_di(cpu_context *ctx) {
-    ctx->int_master_enabled = false;
+void CPUProc::proc_di() {
+    cpu.int_master_enabled = false;
 }
 // Loading procedure
-static void proc_load(cpu_context *ctx) {
+void CPUProc::proc_load() {
     
 }
-static bool check_cond(cpu_context *ctx) {
-    bool z = CPU_FLAG_Z;
-    bool c = CPU_FLAG_C;
+bool CPUProc::check_cond() {
+    bool z = cpu.CPU_FLAG_Z();
+    bool c = cpu.CPU_FLAG_Z();
 
-    switch(ctx->cur_inst->cond) {
+    switch(cpu.cur_inst->cond) {
         case CT_NONE: return true;
         case CT_C: return c;
         case CT_NC: return !c;
@@ -31,49 +33,48 @@ static bool check_cond(cpu_context *ctx) {
     //should never reach this
     return false;
 }
-void cpu_set_flags(cpu_context *ctx, char z, char n, char h, char c)  {
+void CPUProc::cpu_set_flags( char z, char n, char h, char c)  {
     //f flags = 1001    
      if (z != -1) {
-        BIT_SET(ctx->regs.f, 7, z);
+        BIT_SET(cpu.regs.f, 7, z);
     }
 
     if (n != -1) {
-        BIT_SET(ctx->regs.f, 6, n);
+        BIT_SET(cpu.regs.f, 6, n);
     }
 
     if (h != -1) {
-        BIT_SET(ctx->regs.f, 5, h);
+        BIT_SET(cpu.regs.f, 5, h);
     }
 
     if (c != -1) {
-        BIT_SET(ctx->regs.f, 4, c);
+        BIT_SET(cpu.regs.f, 4, c);
     }
 }
-static void proc_jp(cpu_context *ctx) {
+void CPUProc::proc_jp() {
     //if conditional var is true then jump
-    if (check_cond(ctx)) {
-        ctx->regs.pc = ctx->fetched_data;
+    if (check_cond()) {
+        cpu.regs.pc = cpu.fetched_data;
         emu_cycles(1);
     }
 }
-static void proc_xor(cpu_context *ctx) {
-    ctx->regs.a ^= ctx->fetched_data & 0xFF;
-    cpu_set_flags(ctx, ctx->regs.a == 0, 0, 0, 0);
-    printf("register a value:%d\n",ctx->regs.a);
+void CPUProc::proc_xor() {
+    cpu.regs.a ^= cpu.fetched_data & 0xFF;
+    cpu_set_flags(cpu.regs.a == 0, 0, 0, 0);
+    printf("register a value:%d\n",cpu.regs.a);
 }
-static const std::unordered_map<in_type, IN_PROC> processors = {
-    {IN_NONE, proc_none},
-    {IN_NOP, proc_nop},
-    {IN_LD, proc_load},
-    {IN_JP, proc_jp},
-    {IN_DI, proc_di},
-    {IN_XOR, proc_xor}
+static const std::unordered_map<in_type, CPUProc::IN_PROC> processors = {
+    {IN_NONE, CPUProc::proc_none},
+    {IN_NOP, CPUProc::proc_nop},
+    {IN_LD, CPUProc::proc_load},
+    {IN_JP, CPUProc::proc_jp},      
+    {IN_DI, CPUProc::proc_di},
+    {IN_XOR, CPUProc::proc_xor}
 };
 
-IN_PROC inst_get_processor(in_type type) {
+CPUProc::IN_PROC CPUProc::inst_get_processor(in_type type) {
     auto it = processors.find(type);
     if (it != processors.end()) {
         return it->second;
-    }
-    // return processors[type];
+    }// TODO Find something to return for not found case
 }

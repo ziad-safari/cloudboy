@@ -2,7 +2,6 @@
 
 #include <common.h>
 #include <instructions.h>
-
 /**************************
 CPU registers:
 a: accumulator
@@ -11,7 +10,11 @@ b - l: general purpose
 pc: program counter
 sp: stack pointer
 **************************/
-typedef struct {
+
+class CPUProc; 
+
+class CPURegisters {
+public:
     u8 a;
     u8 f;
     u8 b;
@@ -22,10 +25,13 @@ typedef struct {
     u8 l;
     u16 pc;
     u16 sp;
-} cpu_registers;
+    CPURegisters();
+    // ~CPURegisters();
+};
 
-typedef struct {
-    cpu_registers regs;
+class CPU {
+private:
+    CPURegisters regs;
 
     //current fetch...
     u16 fetched_data;
@@ -41,21 +47,29 @@ typedef struct {
     bool stepping;
 
     bool int_master_enabled;
-    
-} cpu_context;
+    void fetch_instruction();
+    void execute();
+    void fetch_data();
+public:
+    CPU();
+    bool step();
+    u16 cpu_read_reg(reg_type rt) const;
+    void cpu_set_reg(reg_type rt, u16 val);
+    bool CPU_FLAG_Z() { return BIT(regs.f, 7);}
+    bool CPU_FLAG_C() { return BIT(regs.f, 4);}
 
-void cpu_init();
-bool cpu_step();
-void fetch_data();
+    // To handle procedure functions
+    friend class CPUProc;
+};
+
+
+
+
 
 //define a type called IN_PROC which is a function pointer
-typedef void (*IN_PROC)(cpu_context *);
+// typedef void (*IN_PROC)(cpu_context *);
 
-// Get the Process function for the instruction type
-IN_PROC inst_get_processor(in_type type);
+// Get the Process function for the instruction
 
-#define CPU_FLAG_Z BIT(ctx->regs.f, 7)
-#define CPU_FLAG_C BIT(ctx->regs.f, 4)
 
-u16 cpu_read_reg(reg_type rt);
-void cpu_set_reg(reg_type rt, u16 val);
+// #define CPU_FLAG_C BIT(ctx->regs.f, 4)

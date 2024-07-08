@@ -38,8 +38,9 @@ int emu_run(int argc, char **argv) {
     //true type fonts
     TTF_Init();
     printf("TTF INIT\n");
-
-    cpu_init();
+    
+    // Initialize the CPU 
+    CPU cpu;
     
     ctx.running = true;
     ctx.paused = false;
@@ -54,7 +55,7 @@ int emu_run(int argc, char **argv) {
         }
         
         //1 step of cpu, terminate if it fails
-        if (!cpu_step()) {
+        if (!cpu.step()) {
             printf("CPU Stopped\n");
             return -3;
         }
