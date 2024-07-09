@@ -47,9 +47,11 @@ private:
     bool stepping;
 
     bool int_master_enabled;
+
+    // Instruction Execution functions
     void fetch_instruction();
-    void execute();
     void fetch_data();
+    void execute();
 public:
     CPU();
     bool step();

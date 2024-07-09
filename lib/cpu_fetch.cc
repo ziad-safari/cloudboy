@@ -1,5 +1,5 @@
 #include <cpu.h>
-#include <bus.h>
+#include <cart.h>
 #include <emu.h>
 
 void CPU::fetch_data() {
