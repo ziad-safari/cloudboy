@@ -47,7 +47,8 @@ private:
     bool stepping;
 
     bool int_master_enabled;
-
+    u8 ie_register;
+    
     // Instruction Execution functions
     void fetch_instruction();
     void fetch_data();
@@ -59,6 +60,8 @@ public:
     void cpu_set_reg(reg_type rt, u16 val);
     bool CPU_FLAG_Z() { return BIT(regs.f, 7);}
     bool CPU_FLAG_C() { return BIT(regs.f, 4);}
+    u8 cpu_get_ie_register();
+    void cpu_set_ie_register(u8 n);
 
     // To handle procedure functions
     friend class CPUProc;

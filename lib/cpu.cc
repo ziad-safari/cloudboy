@@ -44,3 +44,11 @@ bool CPU::step() {
     }
     return true;
 }
+
+u8 CPU::cpu_get_ie_register() {
+    return ie_register;
+}
+
+void CPU::cpu_set_ie_register(u8 n) {
+    ie_register = n;
+}

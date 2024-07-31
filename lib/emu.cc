@@ -8,17 +8,19 @@
 
 //address bus maps address to cartridge
 
-static emu_context ctx;
+// static emu_context ctx;
 
-emu_context *emu_get_context() {
-    return &ctx;
-}
+// emu_context *emu_get_context() {
+//     return &ctx;
+// }
 
 void delay(u32 ms) {
     SDL_Delay(ms);
 }
+emu::emu(int argc, char **argv) 
+: argc{argc}, argv{argv}, running{true}, paused{false}, ticks{0}, cpu{*this}  {}
 
-int emu_run(int argc, char **argv) {
+int emu::emu_run() {
     //no rom file
     if (argc < 2) {
         printf("Usage: emu <rom_file>\n");
@@ -40,15 +42,14 @@ int emu_run(int argc, char **argv) {
     printf("TTF INIT\n");
     
     // Initialize the CPU 
-    CPU cpu;
-    
-    ctx.running = true;
-    ctx.paused = false;
-    ctx.ticks = 0;
+    // CPU cpu;
+    // ctx.running = true;
+    // ctx.paused = false;
+    // ctx.ticks = 0;
 
     //game loop
-    while(ctx.running) {
-        if (ctx.paused) {
+    while(running) {
+        if (paused) {
             //delay 10ms
             delay(10);
             continue;
@@ -60,11 +61,11 @@ int emu_run(int argc, char **argv) {
             return -3;
         }
 
-        ctx.ticks++;
+        ticks++;
     }
     return 0;
 }
 
-void emu_cycles(int cpu_cycles) {
+void emu::emu_cycles(int cpu_cycles) {
     //TODO... Will eventually use to synchronize the Timer with the CPU and the PPU
 }

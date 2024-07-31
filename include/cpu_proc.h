@@ -10,6 +10,7 @@ class CPUProc {
         void proc_di();
         void proc_load();
         void proc_jp();
+        void proc_ldh();
         void proc_xor();
         using IN_PROC = void (CPUProc::*)();
         IN_PROC inst_get_processor(in_type type);

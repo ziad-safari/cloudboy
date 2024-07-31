@@ -1,7 +1,7 @@
 #include <cpu_proc.h>
 #include <cpu.h>
 #include <emu.h>
-#include <cart.h>
+#include <bus.h>
 #include <unordered_map>
 
 //process and execute CPU instructions...
@@ -24,7 +24,7 @@ void CPUProc::proc_load() {
         if (cpu.cur_inst->reg_2 >= RT_AF) {
             //if 16 bit register...
             emu_cycles(1);
-            //bus_write16(cpu.mem_dest, cpu.fetched_data);
+            bus_write16(cpu.mem_dest, cpu.fetched_data);
         } else {
             bus_write(cpu.mem_dest, cpu.fetched_data);
         }
@@ -87,6 +87,16 @@ void CPUProc::proc_jp() {
         emu_cycles(1);
     }
 }
+// Loading to High Ram
+void CPUProc::proc_ldh() {
+    if (cpu.cur_inst->reg_1 == RT_A) {
+        cpu.cpu_set_reg(cpu.cur_inst->reg_1, bus_read(0xFF00 | cpu.fetched_data));
+    } else {
+        bus_write(cpu.mem_dest, cpu.regs.a);
+    }
+
+    emu_cycles(1);
+}
 void CPUProc::proc_xor() {
     cpu.regs.a ^= cpu.fetched_data & 0xFF;
     cpu_set_flags(cpu.regs.a == 0, 0, 0, 0);
@@ -96,6 +106,7 @@ static const std::unordered_map<in_type, CPUProc::IN_PROC> processors = {
     {IN_NONE, CPUProc::proc_none},
     {IN_NOP, CPUProc::proc_nop},
     {IN_LD, CPUProc::proc_load},
+    {IN_LDH, CPUProc::proc_ldh},
     {IN_JP, CPUProc::proc_jp},      
     {IN_DI, CPUProc::proc_di},
     {IN_XOR, CPUProc::proc_xor}
