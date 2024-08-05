@@ -1,6 +1,8 @@
 #pragma once
 
 #include <common.h>
+// #include <emu.h>
+// #include <bus.h>
 #include <instructions.h>
 /**************************
 CPU registers:
@@ -12,7 +14,7 @@ sp: stack pointer
 **************************/
 
 class CPUProc; 
-
+class emu;
 class CPURegisters {
 public:
     u8 a;
@@ -37,7 +39,7 @@ private:
     u16 fetched_data;
     u16 mem_dest;
     bool dest_is_mem;
-
+    emu* EMU;
     // Current Opcode
     u8 opcode;
     instruction *cur_inst;
@@ -54,7 +56,7 @@ private:
     void fetch_data();
     void execute();
 public:
-    CPU();
+    CPU(emu* myemu);
     bool step();
     u16 cpu_read_reg(reg_type rt) const;
     void cpu_set_reg(reg_type rt, u16 val);
@@ -63,8 +65,24 @@ public:
     u8 cpu_get_ie_register();
     void cpu_set_ie_register(u8 n);
 
+    void stack_push(u8 data);
+    void stack_push(u16 data);
+    u8 stack_pop();
+    u16 stack_pop16();
+
+    /*
+    CPU::bus_read(int a, int b) {
+        bus_read()
+    }
+    
+    */
     // To handle procedure functions
     friend class CPUProc;
+    // friend u8 bus_read(u16 address);
+    // friend void bus_write(u16 address, u8 value);
+    // friend u16 bus_read16(u16 address);
+    // friend void bus_write16(u16 address, u16 value);
+
 };
 
 

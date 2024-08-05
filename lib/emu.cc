@@ -18,7 +18,7 @@ void delay(u32 ms) {
     SDL_Delay(ms);
 }
 emu::emu(int argc, char **argv) 
-: argc{argc}, argv{argv}, running{true}, paused{false}, ticks{0}, cpu{*this}  {}
+: argc{argc}, argv{argv}, running{true}, paused{false}, ticks{0}, cpu{new CPU(this)}  {}
 
 int emu::emu_run() {
     //no rom file
@@ -56,13 +56,14 @@ int emu::emu_run() {
         }
         
         //1 step of cpu, terminate if it fails
-        if (!cpu.step()) {
+        if (!cpu->step()) {
             printf("CPU Stopped\n");
             return -3;
         }
 
         ticks++;
     }
+    delete cpu;
     return 0;
 }
 

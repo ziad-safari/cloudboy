@@ -1,6 +1,6 @@
 #include <bus.h>
 #include <cart.h>
-#include <cpu.h>
+#include <emu.h>
 // /*
 // Memory Map:
 // 0x0000 - 0x3FFF : ROM Bank 0
@@ -24,7 +24,7 @@
     }
 
 */
-u8 bus_read(u16 address) {
+u8 bus_read(emu &EMU, u16 address) {
     if (address < 0x8000) {
         //ROM Data
         return cart_read(address);
@@ -38,7 +38,7 @@ u8 bus_read(u16 address) {
         return cart_read(address);
     } else if (address < 0xE000) {
         //WRAM (Working RAM)
-        return wram_read(address);
+        return EMU.ram->wram_read(address);
     } else if (address < 0xFE00) {
         //reserved echo ram...
         return 0;   
@@ -58,14 +58,14 @@ u8 bus_read(u16 address) {
     } else if (address == 0xFFFF) {
         //CPU ENABLE REGISTER...
         //TODO
-        return cpu_get_ie_register();
+        return EMU.cpu->cpu_get_ie_register();
     }
 
     //NO_IMPL
-    return hram_read(address);
+    return EMU.ram->hram_read(address);
 }
 
-void bus_write(u16 address, u8 value) {
+void bus_write(emu &EMU,u16 address, u8 value) {
     if (address < 0x8000) {
         //ROM Data
         cart_write(address, value);
@@ -79,7 +79,7 @@ void bus_write(u16 address, u8 value) {
         cart_write(address, value);
     } else if (address < 0xE000) {
         //WRAM
-        wram_write(address, value);
+        // wram_write(address, value);
     } else if (address < 0xFE00) {
         //reserved echo ram
     } else if (address < 0xFEA0) {
@@ -98,20 +98,20 @@ void bus_write(u16 address, u8 value) {
     } else if (address == 0xFFFF) {
         //CPU SET ENABLE REGISTER
         
-        cpu_set_ie_register(value);
+        EMU.cpu->cpu_set_ie_register(value);
     } else {
-        hram_write(address, value);
+        EMU.ram->hram_write(address, value);
     }
 }
 
-u16 bus_read16(u16 address) {
-    u16 lo = bus_read(address);
-    u16 hi = bus_read(address + 1);
+u16 bus_read16(emu &EMU,u16 address) {
+    u16 lo = bus_read(EMU, address);
+    u16 hi = bus_read(EMU, address + 1);
 
     return lo | (hi << 8);
 }
 
-void bus_write16(u16 address, u16 value) {
-    bus_write(address + 1, (value >> 8) & 0xFF);
-    bus_write(address, value & 0xFF);
+void bus_write16(emu &EMU, u16 address, u16 value) {
+    bus_write(EMU, address + 1, (value >> 8) & 0xFF);
+    bus_write(EMU,address, value & 0xFF);
 }

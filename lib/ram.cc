@@ -1,5 +1,6 @@
 #include <ram.h>
 
+Ram::Ram(emu* myemu) : EMU{myemu} {}
 u8 Ram::wram_read(u16 address) {
     address -= 0xC000;
 

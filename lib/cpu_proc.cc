@@ -23,12 +23,14 @@ void CPUProc::proc_load() {
 
         if (cpu.cur_inst->reg_2 >= RT_AF) {
             //if 16 bit register...
-            emu_cycles(1);
-            bus_write16(cpu.mem_dest, cpu.fetched_data);
+            cpu.EMU->emu_cycles(1);
+            bus_write16(*(cpu.EMU), cpu.mem_dest, cpu.fetched_data);
         } else {
-            bus_write(cpu.mem_dest, cpu.fetched_data);
+            bus_write(*(cpu.EMU), cpu.mem_dest, cpu.fetched_data);
         }
 
+        cpu.EMU->emu_cycles(1);
+        
         return;
     }
 
@@ -84,23 +86,23 @@ void CPUProc::proc_jp() {
     //if conditional var is true then jump
     if (check_cond()) {
         cpu.regs.pc = cpu.fetched_data;
-        emu_cycles(1);
+        cpu.EMU->emu_cycles(1);
     }
 }
 // Loading to High Ram
 void CPUProc::proc_ldh() {
     if (cpu.cur_inst->reg_1 == RT_A) {
-        cpu.cpu_set_reg(cpu.cur_inst->reg_1, bus_read(0xFF00 | cpu.fetched_data));
+        cpu.cpu_set_reg(cpu.cur_inst->reg_1, bus_read(*(cpu.EMU), 0xFF00 | cpu.fetched_data));
     } else {
-        bus_write(cpu.mem_dest, cpu.regs.a);
+        bus_write(*(cpu.EMU), cpu.mem_dest, cpu.regs.a);
     }
 
-    emu_cycles(1);
+    cpu.EMU->emu_cycles(1);
 }
 void CPUProc::proc_xor() {
     cpu.regs.a ^= cpu.fetched_data & 0xFF;
     cpu_set_flags(cpu.regs.a == 0, 0, 0, 0);
-    printf("register a value:%d\n",cpu.regs.a);
+    // printf("register a value:%d\n",cpu.regs.a);
 }
 static const std::unordered_map<in_type, CPUProc::IN_PROC> processors = {
     {IN_NONE, CPUProc::proc_none},
@@ -117,4 +119,5 @@ CPUProc::IN_PROC CPUProc::inst_get_processor(in_type type) {
     if (it != processors.end()) {
         return it->second;
     }// TODO Find something to return for not found case
+    return nullptr;
 }
