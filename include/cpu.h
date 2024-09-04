@@ -66,7 +66,7 @@ public:
     void cpu_set_ie_register(u8 n);
 
     void stack_push(u8 data);
-    void stack_push(u16 data);
+    void stack_push16(u16 data);
     u8 stack_pop();
     u16 stack_pop16();
 

@@ -5,7 +5,7 @@ void CPU::stack_push(u8 data) {
     regs.sp--;
     bus_write(*EMU, regs.sp,data);
 }
-void CPU::stack_push(u16 data) {
+void CPU::stack_push16(u16 data) {
     stack_push((data >> 8) & 0xFF);
     stack_push(data & 0xFF);
 }
